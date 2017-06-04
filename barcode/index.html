@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style>
+			#scan{
+				width: 100%;
+				height: 300px;
+				border: 1px solid #2AC845;
+				box-sizing: border-box;
+			}
+		</style>
+	</head>
+
+	<body>
+		<button type="button" class="takePhoto mui-btn mui-btn-blue mui-btn-block">拍照</button>
+		<button type="button" class="scan-barcode mui-btn mui-btn-blue mui-btn-block">识别图片中的二维码</button>
+		<button type="button" class="saoyisao mui-btn mui-btn-blue mui-btn-block">扫一扫</button>
+		<button type="button" class="btn1 mui-btn mui-btn-blue">结束扫描</button>
+		<button type="button" class="btn2 mui-btn mui-btn-blue">关闭扫描</button>
+		<button type="button" class="btn3 mui-btn mui-btn-blue">闪光灯</button>
+		
+		<img src="" id="img" width="50%"/>
+		
+		<div id="scan"></div>
+		
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+			mui.plusReady(function(){
+				var imgPath = '';
+				document.querySelector('.takePhoto').addEventListener('tap', function(){
+					var camera = plus.camera.getCamera();
+					camera.captureImage(
+						function(filePath){
+							imgPath = filePath;
+							console.log(filePath);
+							filePath = plus.io.convertLocalFileSystemURL(filePath);
+							document.getElementById('img').src = filePath;
+						},
+						function(){
+							console.log('拍照失败');
+						}
+					);
+					
+				});
+				
+				document.querySelector('.scan-barcode').addEventListener('tap', function(){
+					plus.barcode.scan(imgPath, function(type, code, file){
+						console.log(type)
+						console.log(code)
+						console.log(file)
+						
+					}, function(error){
+						console.log('识别失败'+error.code+error.message);
+					}, [0, 1,2,3,4,5,6])
+					
+					
+				});
+				
+				
+				
+				
+				var barcode = null;
+				document.querySelector('.saoyisao').addEventListener('tap', function(){
+					//创建识别条码控件对象
+					barcode = new plus.barcode.Barcode(
+						'scan',
+						[0,1,2,3,4,5,6],
+						{
+							frameColor: '#2AC845',
+							scanbarColor: '#2AC845'
+							
+						}
+					);
+					
+					//添加事件
+					barcode.onmarked = function(type, code, file){
+						console.log(type)
+						console.log(code)
+						console.log(file)
+					}
+					barcode.onerror = function(error ){
+						console.log('扫一扫失败'+error.code+error.message);
+					}
+					
+					//开始扫描
+					barcode.start();
+					
+				});
+				
+				
+			
+			
+			
+			document.querySelector('.btn1').addEventListener('tap', function(){
+				//结束扫描
+				barcode.cancel();
+			});
+			document.querySelector('.btn2').addEventListener('tap', function(){
+				//关闭
+				barcode.close();
+			});
+			var isFlash = false;
+			document.querySelector('.btn3').addEventListener('tap', function(){
+				//闪光灯
+				isFlash = !isFlash;
+				barcode.setFlash(isFlash);
+			});
+			
+			
+			
+		})
+			
+		</script>
+	</body>
+
+</html>

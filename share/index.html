@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		
+		<button type="button" class="share mui-btn mui-btn-blue mui-btn-block">分享</button>
+		
+		
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui.plusReady(function(){
+				
+				document.querySelector('.share').addEventListener('tap', function(){
+				//获得分享服务对象
+				plus.share.getServices(
+					function(services){
+						
+						console.log(JSON.stringify(services));
+						//获得有权限分享服务对象
+						var newSer = services.filter(function(item, index){
+							return item.authenticated;
+						})
+						
+						console.log(JSON.stringify(newSer));
+						//组装分享按钮的样式
+						var newArr = [];
+						var newSer1 = [];
+						newSer.map(function(item, index){
+							if(item.id == 'weixin'){
+								
+								var newItem = {};
+								newItem.title = '分享到朋友圈';
+								newItem.style = 'default';
+								newArr.push(newItem);
+								//给服务对象增加字段path
+								item.path = 'WXSceneTimeline';
+								newSer1.push(item);
+								
+								var newItem1 = {};
+								newItem1.title = '分享到微信好友';
+								newItem1.style = 'default';
+								newArr.push(newItem1);
+								var copyItem = {};
+								//拷贝服务对象再增加字段path
+								mui.extend(copyItem, item);
+								copyItem.path = 'WXSceneSession';
+								newSer1.push(copyItem);
+							}else{
+								var newItem = {};
+								newItem.title = '分享到'+item.description;
+								newItem.style = 'default';
+								newArr.push(newItem);
+								newSer1.push(item);
+							}
+							
+						})
+						
+						console.log(JSON.stringify(newSer1));
+						
+						//使用原生actionsheet，分享的样式显示
+						plus.nativeUI.actionSheet({
+							title: '分享到',
+							cancel: '取消',
+							buttons: newArr
+						}, function(ev){
+							console.log(ev.index);
+							if(ev.index == 0){
+								return;
+							}
+							//获得对应的分享对象
+							var service = newSer1[ev.index-1];
+							//获得该分享的授权
+							service.authorize(function(){
+								console.log('获得了授权');
+								//执行分享
+								service.send(
+									//分享内容
+									{
+										title: '培训机构哪家强',
+										content: '西部硅谷找千锋',
+										pictures: ['logo.jpg'],
+										thumbs: ['logo.jpg'],
+										href: 'http://www.qfedu.com/',
+										//微信分享的渠道
+										extra: {
+											scene: service.path
+										}
+									},
+									//分享成功
+									function(){
+										console.log('分享成功');
+										plus.nativeUI.toast('分享成功');
+									},
+									//分享失败
+									function(){
+										console.log('分享失败');
+									}
+								);
+								
+								
+								
+							});
+							
+							
+							
+							
+						});
+						
+						
+						
+					},
+					function(error){
+						console.log('获得服务对象发生错误'+error.code+error.message);
+					}
+				);
+				
+				
+				
+				
+				
+				})
+				
+				
+				
+			})
+			
+			
+		</script>
+	</body>
+
+</html>
+
+
+<!--51bda61b8b053d1707d14dc3bf673918-->

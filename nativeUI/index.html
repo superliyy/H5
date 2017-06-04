@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="../css/mui.css"/>
+</head>
+<body>
+    
+    <button type="button" class="alert mui-btn mui-btn-blue mui-btn-block">alert</button>
+    <button type="button" class="actionsheet mui-btn mui-btn-blue mui-btn-block">actionsheet</button>
+    <button type="button" class="waiting mui-btn mui-btn-blue mui-btn-block">waiting</button>
+    <button type="button" class="date mui-btn mui-btn-blue mui-btn-block">date</button>
+    <button type="button" class="toast mui-btn mui-btn-blue mui-btn-block">toast</button>
+    
+    <script src="../js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.init()
+    
+    mui.plusReady(function(){
+    	document.querySelector('.toast').addEventListener('tap', function(){
+    		plus.nativeUI.toast(
+    			'登录成功',
+    			{}
+    		)
+    		
+    		
+    	});
+    	
+    	
+    	
+    	document.querySelector('.date').addEventListener('tap', function(){
+    		plus.nativeUI.pickDate(
+    			function(ev){
+    				console.log(ev.date);
+    			},
+    			function(error){
+    				console.log('失败'+error.code+error.message);
+    			},
+    			{
+    				title: '请选择日期'
+    			}
+    		);
+    		
+    	});
+    		
+    		
+    		
+    	document.querySelector('.waiting').addEventListener('tap', function(){
+    		plus.nativeUI.showWaiting(
+    			'正在加载中...',
+    			{
+    				width: '200px',
+    				height: '150px',
+    				
+    			}
+    		);
+    		
+    		setTimeout(function(){
+    			plus.nativeUI.closeWaiting();
+    		}, 2000)
+    		
+    	});
+    	
+    	document.querySelector('.actionsheet').addEventListener('tap', function(){
+    		console.log(111111111111)
+    		plus.nativeUI.actionSheet(
+    			{title: '分享内容到',
+    			cancel: '取消',
+    			buttons: [
+    				{title: 'qq好友分享', style: 'default'},
+    				{title: 'qq空间分享', style: 'default'},
+    				{title: '微信好友分享', style: 'default'},
+    				{title: '微博分享', style: 'default'},
+    				{title: '我不分享了', style: 'destructive'}
+    			]},
+    			function(ev){
+    				console.log(ev.index);
+    				//根据下标，判断，做对应的逻辑操作
+    			}
+    		);
+    		
+    	})
+    	
+    	
+    	document.querySelector('.alert').addEventListener('tap', function(){
+    		plus.nativeUI.alert('网络错误', function(){
+    			console.log('点击了确定按钮');
+    		},'提示', 'ok');
+    		
+    	})
+    	
+    	
+    	
+    	
+    })
+    </script>
+</body>
+</html>

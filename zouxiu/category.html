@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+		<title></title>
+		<style>
+			*{ margin: 0; padding: 0; }
+			html, body{ width: 100%; height: 100%;}
+			header{width: 100%; height: 44px; position: absolute; top: 0; left: 0; box-shadow: 0 0 5px #ddd;}
+			header .right1{ height: 32px; padding: 0 10px; line-height: 32px; position: absolute; top: 6px; right: 10px;}
+			header .right2{ height: 32px; padding: 0 10px; line-height: 32px; position: absolute; top: 6px; right: 50px;}
+			.content{ width: 100%; margin-top: 44px;}
+			.content img{ width: 200px;}
+			.img-info{ width: 100%;}
+			.img-info img{ width: 33.33%; display: block; float: left;}
+			video{ width: 100%; }
+		</style>
+		<script src="../js/mui.js"></script>
+	</head>
+	<body>
+		<header>
+			标题
+			<div class="right1">拍照</div>
+			<div class="right2">相册</div>
+		</header>
+		
+		<div class="content">
+			<img src="" class="main-img"/>
+			
+			<div class="img-info"></div>
+			
+			<video id="myVideo" controls="controls">
+			</video>
+			
+		</div>
+		
+		<script>
+			mui.init();
+			mui.plusReady(function(){
+				
+				document.querySelector('.right2').addEventListener('tap', function(){
+					//读取相册照片
+					plus.gallery.pick(
+						function(path){
+							//选择单张照片，这个path就是字符串路径
+							//console.log(path)
+							//document.querySelector('.main-img').src = path;
+							
+							//选择多张照片，、
+							console.log(JSON.stringify(path))
+							var html = '';
+							for (var i = 0; i < path.files.length; i++) {
+								
+								html += '<img src="'+path.files[i]+'"/>';
+							}
+							
+							document.querySelector('.img-info').innerHTML = html;
+							
+							
+							
+							
+						},function(error){
+							console.log('错误'+error.code+error.message);
+							
+						},{
+							maximum: 3,
+							multiple: true,
+							onmaxed: function(){
+								alert('不能再选照片了');
+								
+							}
+						}
+					)
+					
+					
+					
+				})
+				
+				
+				
+				
+				
+				document.querySelector('.right1').addEventListener('tap', function(){
+					//调用拍照功能
+					//获得拍照对象
+					
+					var camera = plus.camera.getCamera();
+					
+					//执行拍照
+					camera.captureImage(function(filePath){
+						//filePath这个文件路径，是手机给项目分配存储空间下的相对路径
+						//file://
+						//将相对路径转为绝对路径
+						console.log(filePath);
+						filePath = plus.io.convertLocalFileSystemURL(filePath);
+						console.log(filePath);
+						document.querySelector('.main-img').src = filePath;
+						
+						//保存到相册中
+						plus.gallery.save(filePath, function(){
+							console.log('保存成功');
+						}, function(error){
+							console.log('错误'+error.code+error.message);
+						})
+						
+						
+					}, function(error){
+						console.log(error.code);
+						console.log(error.message);
+					}, {
+						index: 1
+					})
+				
+					
+					
+					
+					//录像
+					camera.startVideoCapture(
+						function(filePath){
+							console.log(filePath)
+							
+							filePath = plus.io.convertLocalFileSystemURL(filePath);
+							
+							document.getElementById('myVideo').src = filePath;
+							
+						},
+						function(error){
+							console.log(error.code);
+							console.log(error.message);
+						}
+					)
+					
+					
+					
+				});
+				
+				
+				
+				
+			})
+			
+			
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="../css/mui.css"/>
+</head>
+<body>
+	
+	<button type="button" class="contacts mui-btn mui-btn-blue mui-btn-block">获得通讯录</button>
+    
+    <script src="../js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.init();
+    
+    mui.plusReady(function(){
+    	document.querySelector('.contacts').addEventListener('tap', function(){
+    		
+    		console.log(plus.contacts.ADDRESSBOOK_PHONE);
+    		console.log(plus.contacts.ADDRESSBOOK_SIM);
+    		plus.contacts.getAddressBook(
+    			plus.contacts.ADDRESSBOOK_PHONE,
+    			function(addressbook){
+    				var contact = addressbook.create();
+    				contact.name = {
+    					familyName : '杨',
+    					givenName : '培园'
+    				};
+    				contact.phoneNumbers = [
+    					{type: 'mobile', value: '12345678', preferred: true},
+    					{type: 'home', value: '765432', preferred: false},
+    					{type: 'company', value: '1234567', preferred: false}
+    				];
+    				
+    				contact.save();
+    				
+    				console.log('保存成功');
+    				
+    			},
+    			function(){
+    				
+    			}
+    		);
+    		
+    		
+    		
+    	})
+    })
+    
+    
+    
+    
+    	
+    </script>
+</body>
+</html>
